@@ -9,6 +9,11 @@ import json
 import time
 import re
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 import database
 import ai_engine
@@ -396,7 +401,7 @@ if "target_domain" not in st.session_state:
     st.session_state.target_domain = "Python & Backend"
 
 if "gemini_api_key" not in st.session_state:
-    st.session_state.gemini_api_key = ""
+    st.session_state.gemini_api_key = os.environ.get("GEMINI_API_KEY", "") or os.environ.get("GOOGLE_API_KEY", "")
 
 # Aptitude State
 if "aptitude_questions" not in st.session_state:
