@@ -33,7 +33,7 @@ st.set_page_config(
 # Initialize database
 database.init_db()
 
-# --- Custom Styling ---
+# --- Custom Styling (dashboard/post-login pages only — login CSS is injected inside the auth block) ---
 st.markdown("""
 <style>
     /* Global Styling */
@@ -169,122 +169,6 @@ st.markdown("""
         border-radius: 8px;
         font-weight: 600;
         transition: all 0.2s ease-in-out;
-    }
-
-    /* Clean Modern SaaS Login & Form UI */
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 16px !important;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.04) !important;
-        padding: 36px 32px 30px 32px !important;
-    }
-    div[data-testid="stTextInput"] {
-        margin-bottom: 16px !important;
-    }
-    div[data-testid="stTextInput"] label {
-        font-size: 15px !important;
-        font-weight: 600 !important;
-        color: #1e293b !important;
-        margin-bottom: 6px !important;
-    }
-    div[data-testid="stTextInput"] input {
-        border-radius: 8px !important;
-        border: 1.5px solid #cbd5e1 !important;
-        height: 52px !important;
-        min-height: 52px !important;
-        padding: 0 16px !important;
-        background-color: #ffffff !important;
-        color: #0f172a !important;
-        font-size: 15.5px !important;
-        transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
-    }
-    div[data-testid="stTextInput"] input:focus {
-        border-color: #2563eb !important;
-        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
-        outline: none !important;
-    }
-    div[data-testid="stCheckbox"] {
-        margin-top: -6px !important;
-        margin-bottom: 16px !important;
-    }
-    div[data-testid="stCheckbox"] label {
-        font-size: 13.5px !important;
-        color: #64748b !important;
-        font-weight: 500 !important;
-    }
-
-    /* Blue Professional Branding Buttons */
-    div.st-key-btn_login_submit > button,
-    div.st-key-btn_submit_reset > button,
-    div.st-key-btn_execute_signup > button {
-        background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%) !important;
-        background-color: #2563eb !important;
-        color: #ffffff !important;
-        height: 52px !important;
-        min-height: 52px !important;
-        font-size: 16.5px !important;
-        font-weight: 600 !important;
-        border-radius: 8px !important;
-        border: none !important;
-        width: 100% !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25) !important;
-        transition: all 0.2s ease-in-out !important;
-        letter-spacing: 0.2px !important;
-    }
-    div.st-key-btn_login_submit > button:hover,
-    div.st-key-btn_submit_reset > button:hover,
-    div.st-key-btn_execute_signup > button:hover {
-        background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%) !important;
-        background-color: #1d4ed8 !important;
-        color: #ffffff !important;
-        box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35) !important;
-        transform: translateY(-1px) !important;
-    }
-    div.st-key-btn_login_submit > button:active,
-    div.st-key-btn_submit_reset > button:active,
-    div.st-key-btn_execute_signup > button:active {
-        background-color: #1e3a8a !important;
-        transform: translateY(0px) !important;
-    }
-
-    /* Blue Navigation Links for Forgot Password & Sign Up */
-    div.st-key-btn_forgot_password_link button,
-    div.st-key-btn_signup_link button,
-    div.st-key-btn_return_login button,
-    div.st-key-btn_cancel_reset button {
-        background: transparent !important;
-        border: none !important;
-        padding: 4px 0 !important;
-        color: #2563eb !important;
-        font-weight: 600 !important;
-        font-size: 14.5px !important;
-        text-decoration: none !important;
-        box-shadow: none !important;
-        text-align: left !important;
-        cursor: pointer !important;
-        min-height: auto !important;
-        height: auto !important;
-        transition: color 0.15s ease !important;
-    }
-    div.st-key-btn_forgot_password_link button:hover,
-    div.st-key-btn_signup_link button:hover,
-    div.st-key-btn_return_login button:hover,
-    div.st-key-btn_cancel_reset button:hover {
-        color: #1d4ed8 !important;
-        text-decoration: underline !important;
-        background: transparent !important;
-    }
-
-    /* Centered Responsive Layout for Auth Card */
-    @media (max-width: 640px) {
-        div[data-testid="stVerticalBlockBorderWrapper"] {
-            padding: 24px 18px 20px 18px !important;
-            border-radius: 12px !important;
-        }
     }
 
     /* Single-Column Vertical Dashboard Cards */
@@ -561,32 +445,41 @@ else:
     nav_selection = "Authentication"
 
 # =========================================================================
-# PAGE 0: AUTHENTICATION (SINGLE-SCREEN CENTERED CARD)
+# PAGE 0: AUTHENTICATION — Modern SaaS Login (Linear/Vercel style)
+# CSS is injected HERE ONLY so it never leaks into the dashboard.
 # =========================================================================
 if not st.session_state.user:
-    # Hide sidebar completely on unauthenticated login view
+    # ── Login-page-only CSS ───────────────────────────────────────────────
     st.markdown("""
     <style>
-        [data-testid="stSidebar"], section[data-testid="stSidebar"] {
-            display: none !important;
+        /* ── Hide Streamlit chrome on the login page ── */
+        [data-testid="stSidebar"], section[data-testid="stSidebar"],
+        [data-testid="collapsedControl"],
+        header[data-testid="stHeader"],
+        #MainMenu, footer { display: none !important; }
+
+        /* ── Full-page dark gradient background ── */
+        .stApp {
+            background: linear-gradient(160deg, #0b1120 0%, #0f172a 55%, #1a1040 100%) !important;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
         }
-        [data-testid="collapsedControl"] {
-            display: none !important;
-        }
+
+        /* ── Outer block: remove default padding, let card center ── */
         .main .block-container {
             max-width: 100% !important;
-            padding-top: 2rem !important;
-            padding-bottom: 3rem !important;
+            padding: 3rem 1rem 4rem 1rem !important;
         }
+
+        /* ── Center the column layout ── */
         div[data-testid="stHorizontalBlock"] {
             display: flex !important;
             justify-content: center !important;
-            align-items: center !important;
+            align-items: flex-start !important;
         }
         @media (min-width: 768px) {
             div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) {
-                max-width: 480px !important;
-                min-width: 440px !important;
+                max-width: 440px !important;
+                min-width: 400px !important;
             }
         }
         @media (max-width: 767px) {
@@ -599,53 +492,217 @@ if not st.session_state.user:
                 max-width: 100% !important;
             }
         }
+
+        /* ── Card: glass-dark surface ── */
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            background: rgba(15, 23, 42, 0.92) !important;
+            border: 1px solid rgba(99, 102, 241, 0.18) !important;
+            border-radius: 16px !important;
+            box-shadow:
+                0 0 0 1px rgba(99,102,241,0.08),
+                0 20px 60px -10px rgba(0,0,0,0.6),
+                0 0 80px -20px rgba(79,70,229,0.15) !important;
+            padding: 36px 32px 28px 32px !important;
+        }
+        @media (max-width: 640px) {
+            div[data-testid="stVerticalBlockBorderWrapper"] {
+                padding: 24px 18px 20px 18px !important;
+                border-radius: 12px !important;
+            }
+        }
+
+        /* ── Input labels: light gray, readable on dark card ── */
+        div[data-testid="stTextInput"] label,
+        div[data-testid="stTextInput"] label p {
+            font-size: 13.5px !important;
+            font-weight: 500 !important;
+            color: #cbd5e1 !important;
+            margin-bottom: 5px !important;
+            letter-spacing: 0.1px !important;
+        }
+
+        /* ── Input fields: dark surface, light text ── */
+        div[data-testid="stTextInput"] input {
+            border-radius: 8px !important;
+            border: 1.5px solid #334155 !important;
+            height: 46px !important;
+            min-height: 46px !important;
+            padding: 0 14px !important;
+            background-color: #1e293b !important;
+            color: #f1f5f9 !important;
+            font-size: 15px !important;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease !important;
+            caret-color: #6366f1 !important;
+        }
+        div[data-testid="stTextInput"] input::placeholder {
+            color: #475569 !important;
+        }
+        div[data-testid="stTextInput"] input:focus {
+            border-color: #6366f1 !important;
+            box-shadow: 0 0 0 3px rgba(99,102,241,0.2) !important;
+            outline: none !important;
+            background-color: #1e293b !important;
+        }
+        div[data-testid="stTextInput"] {
+            margin-bottom: 14px !important;
+        }
+
+        /* ── Checkbox: small, gray label, tight spacing ── */
+        div[data-testid="stCheckbox"] {
+            margin-top: 2px !important;
+            margin-bottom: 4px !important;
+        }
+        div[data-testid="stCheckbox"] label,
+        div[data-testid="stCheckbox"] label p {
+            font-size: 12.5px !important;
+            color: #94a3b8 !important;
+            font-weight: 400 !important;
+        }
+        div[data-testid="stCheckbox"] span[data-testid="stCheckboxLabel"] {
+            color: #94a3b8 !important;
+        }
+
+        /* ── Primary action buttons: blue-to-indigo gradient ── */
+        div.st-key-btn_login_submit > button,
+        div.st-key-btn_submit_reset > button,
+        div.st-key-btn_execute_signup > button {
+            background: linear-gradient(135deg, #4f46e5 0%, #2563eb 100%) !important;
+            color: #ffffff !important;
+            height: 46px !important;
+            min-height: 46px !important;
+            font-size: 15.5px !important;
+            font-weight: 600 !important;
+            border-radius: 8px !important;
+            border: none !important;
+            width: 100% !important;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35) !important;
+            transition: all 0.2s ease-in-out !important;
+            letter-spacing: 0.2px !important;
+        }
+        div.st-key-btn_login_submit > button:hover,
+        div.st-key-btn_submit_reset > button:hover,
+        div.st-key-btn_execute_signup > button:hover {
+            background: linear-gradient(135deg, #4338ca 0%, #1d4ed8 100%) !important;
+            box-shadow: 0 6px 20px rgba(79, 70, 229, 0.45) !important;
+            transform: translateY(-1px) !important;
+            filter: brightness(1.08) !important;
+        }
+        div.st-key-btn_login_submit > button:active,
+        div.st-key-btn_submit_reset > button:active,
+        div.st-key-btn_execute_signup > button:active {
+            transform: translateY(0px) !important;
+            filter: brightness(0.95) !important;
+        }
+
+        /* ── Link-style navigation buttons ── */
+        div.st-key-btn_forgot_password_link button,
+        div.st-key-btn_signup_link button,
+        div.st-key-btn_return_login button,
+        div.st-key-btn_cancel_reset button {
+            background: transparent !important;
+            border: none !important;
+            padding: 2px 0 !important;
+            color: #818cf8 !important;
+            font-weight: 600 !important;
+            font-size: 13.5px !important;
+            box-shadow: none !important;
+            cursor: pointer !important;
+            min-height: auto !important;
+            height: auto !important;
+            transition: color 0.15s ease !important;
+        }
+        div.st-key-btn_forgot_password_link button:hover,
+        div.st-key-btn_signup_link button:hover,
+        div.st-key-btn_return_login button:hover,
+        div.st-key-btn_cancel_reset button:hover {
+            color: #a5b4fc !important;
+            text-decoration: underline !important;
+            background: transparent !important;
+        }
+
+        /* ── Streamlit alert/info boxes: keep visible on dark bg ── */
+        div[data-testid="stAlert"] {
+            border-radius: 8px !important;
+        }
     </style>
     """, unsafe_allow_html=True)
 
+    # Three-column layout: spacers on sides, card in center
     col_spacer_l, col_center, col_spacer_r = st.columns([1, 1.4, 1])
 
     with col_center:
         with st.container(border=True):
-            # -------------------------------------------------------------
-            # 1. LOGIN INTERFACE
-            # -------------------------------------------------------------
-            if st.session_state.auth_mode == "login":
-                if st.session_state.show_forgot_password:
-                    # Top Section
-                    st.markdown("""
-                    <div style="text-align: center; margin-bottom: 22px;">
-                        <div style="display: inline-flex; width: 54px; height: 54px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 14px; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28); margin-bottom: 12px;">
-                            <span style="font-size: 26px;">🎯</span>
-                        </div>
-                        <h1 style="font-size: 24px; font-weight: 700; color: #E53935; margin: 0 0 2px 0; letter-spacing: -0.4px;">AI Interviewer</h1>
-                        <p style="font-size: 13px; font-weight: 600; color: #E53935; margin: 0 0 16px 0; letter-spacing: 0.6px; text-transform: uppercase;">Skill Assessment Platform</p>
-                        <div style="height: 1px; background: #e2e8f0; margin: 0 auto 16px auto; width: 85%;"></div>
-                        <h2 style="font-size: 20px; font-weight: 700; color: #1e293b; margin: 0 0 6px 0;">Reset your password</h2>
-                        <p style="font-size: 14px; color: #64748b; margin: 0 0 4px 0;">Enter your registered email address along with your new password.</p>
+            # ── Shared card header (logo + app name + tagline) ───────────
+            def _render_card_header(subtitle="Sign in to continue your assessment"):
+                st.markdown(f"""
+                <div style="text-align:center; margin-bottom:24px;">
+                    <!-- Logo icon -->
+                    <div style="display:inline-flex; width:56px; height:56px;
+                                background:linear-gradient(135deg,#4f46e5 0%,#2563eb 100%);
+                                border-radius:14px; align-items:center; justify-content:center;
+                                box-shadow:0 8px 20px rgba(79,70,229,0.4); margin-bottom:14px;">
+                        <span style="font-size:28px; line-height:1;">🎯</span>
                     </div>
+                    <!-- App name -->
+                    <h1 style="font-size:22px; font-weight:700; color:#f1f5f9;
+                               margin:0 0 3px 0; letter-spacing:-0.3px;">AI Interviewer</h1>
+                    <!-- App subtitle -->
+                    <p style="font-size:12px; font-weight:500; color:#64748b;
+                              margin:0 0 10px 0; letter-spacing:0.8px;
+                              text-transform:uppercase;">Skill Assessment Platform</p>
+                    <!-- Divider -->
+                    <div style="height:1px; background:linear-gradient(90deg,transparent,#334155,transparent);
+                                margin:0 auto 14px auto; width:80%;"></div>
+                    <!-- Tagline -->
+                    <p style="font-size:14px; color:#94a3b8; margin:0;">{subtitle}</p>
+                </div>
+                """, unsafe_allow_html=True)
+
+            # =============================================================
+            # 1. LOGIN INTERFACE
+            # =============================================================
+            if st.session_state.auth_mode == "login":
+
+                # ── 1a. RESET PASSWORD FLOW ───────────────────────────────
+                if st.session_state.show_forgot_password:
+                    _render_card_header("Reset your password")
+
+                    # Section sub-heading
+                    st.markdown("""
+                    <p style="font-size:13.5px; color:#64748b; margin:-8px 0 16px 0; text-align:center;">
+                        Enter your registered email and choose a new password.
+                    </p>
                     """, unsafe_allow_html=True)
 
                     reset_ident = st.text_input(
                         "Email Address *",
-                        placeholder="Enter your email address",
+                        placeholder="Enter your registered email",
                         key="reset_user_ident"
                     )
 
+                    # Password fields — rendered BELOW the checkbox using st.empty()
+                    # so the type is correct on the SAME rerun (no one-click lag).
+                    pwd_placeholder_1 = st.empty()
+                    pwd_placeholder_2 = st.empty()
+
+                    # Checkbox below the password slot (reads BEFORE we render the input)
                     show_reset_pwd = st.checkbox("Show password", key="chk_show_reset_pwd")
 
-                    reset_new_pwd = st.text_input(
+                    # Now fill the placeholders using the already-read checkbox value
+                    reset_new_pwd = pwd_placeholder_1.text_input(
                         "New Password *",
                         type="text" if show_reset_pwd else "password",
-                        placeholder="Enter new password (min. 6 characters)",
+                        placeholder="New password (min. 6 characters)",
                         key="reset_new_pwd"
                     )
-                    reset_confirm_pwd = st.text_input(
+                    reset_confirm_pwd = pwd_placeholder_2.text_input(
                         "Confirm New Password *",
                         type="text" if show_reset_pwd else "password",
                         placeholder="Confirm new password",
                         key="reset_confirm_pwd"
                     )
 
+                    st.markdown("<div style='height:6px;'></div>", unsafe_allow_html=True)
                     if st.button("Reset Password", type="primary", use_container_width=True, key="btn_submit_reset"):
                         clean_ident = reset_ident.strip()
                         if not clean_ident or not reset_new_pwd or not reset_confirm_pwd:
@@ -666,41 +723,53 @@ if not st.session_state.user:
                             else:
                                 st.error(msg)
 
-                    st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
+                    st.markdown("<div style='height:14px;'></div>", unsafe_allow_html=True)
                     if st.button("← Cancel & Return to Log In", key="btn_cancel_reset"):
                         st.session_state.show_forgot_password = False
                         st.rerun()
 
+                # ── 1b. MAIN LOGIN FORM ───────────────────────────────────
                 else:
-                    # Top Section
-                    st.markdown("""
-                    <div style="text-align: center; margin-bottom: 22px;">
-                        <div style="display: inline-flex; width: 54px; height: 54px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 14px; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28); margin-bottom: 12px;">
-                            <span style="font-size: 26px;">🎯</span>
-                        </div>
-                        <h1 style="font-size: 24px; font-weight: 700; color: #E53935; margin: 0 0 2px 0; letter-spacing: -0.4px;">AI Interviewer</h1>
-                        <p style="font-size: 13px; font-weight: 600; color: #E53935; margin: 0 0 16px 0; letter-spacing: 0.6px; text-transform: uppercase;">Skill Assessment Platform</p>
-                        <div style="height: 1px; background: #e2e8f0; margin: 0 auto 12px auto; width: 85%;"></div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                    _render_card_header("Sign in to continue your assessment")
 
-                    # 1. Email Address label & input field
+                    # Email field
                     login_email = st.text_input(
-                        "Email Address *",
-                        placeholder="Enter your email address",
+                        "Email Address",
+                        placeholder="you@example.com",
                         key="login_email_input"
                     )
 
-                    # 2. Show/Hide Password eye toggle & Password input
+                    # ── Password field + "Show password" below it ──────────
+                    # Strategy: declare an st.empty() placeholder for the
+                    # password input FIRST, then render the checkbox (which
+                    # Streamlit evaluates immediately on rerun), then fill the
+                    # placeholder. This means the checkbox value is always
+                    # fresh when the input type is determined — no one-click lag.
+                    pwd_slot = st.empty()
+
+                    # Checkbox sits BELOW the password field visually
+                    # (tight spacing via CSS above)
                     show_pwd = st.checkbox("Show password", key="chk_login_show_pwd")
-                    login_password = st.text_input(
-                        "Password *",
+
+                    # Render the password input INTO the placeholder above
+                    login_password = pwd_slot.text_input(
+                        "Password",
                         type="text" if show_pwd else "password",
                         placeholder="Enter your password",
                         key="login_password_input"
                     )
 
-                    # 3. Log In button
+                    # "Forgot password?" — small, right-aligned, below checkbox
+                    st.markdown("<div style='height:2px;'></div>", unsafe_allow_html=True)
+                    col_fp_gap, col_fp_link = st.columns([2, 1])
+                    with col_fp_link:
+                        if st.button("Forgot password?", key="btn_forgot_password_link"):
+                            st.session_state.show_forgot_password = True
+                            st.rerun()
+
+                    st.markdown("<div style='height:10px;'></div>", unsafe_allow_html=True)
+
+                    # Log In button
                     if st.button("Log In", type="primary", use_container_width=True, key="btn_login_submit"):
                         clean_email = login_email.strip()
                         if not clean_email or not login_password:
@@ -710,66 +779,54 @@ if not st.session_state.user:
                         else:
                             login_user(clean_email, login_password)
 
-                    # 4. Spacing between Log in button and options
-                    st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
+                    # Divider
+                    st.markdown("""
+                    <div style="height:1px; background:linear-gradient(90deg,transparent,#1e293b,transparent);
+                                margin:18px 0 14px 0;"></div>
+                    """, unsafe_allow_html=True)
 
-                    # 5. Forgot Password Section
-                    col_fp1, col_fp2 = st.columns([1.15, 1])
-                    with col_fp1:
-                        st.markdown("<p style='text-align: right; color: #64748b; font-size: 14px; margin: 0; padding-top: 4px;'>Forgot your password?</p>", unsafe_allow_html=True)
-                    with col_fp2:
-                        if st.button("Reset your password", key="btn_forgot_password_link"):
-                            st.session_state.show_forgot_password = True
-                            st.rerun()
-
-                    # 6. Spacing between Forgot Password and Sign Up
-                    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-
-                    # 7. Sign Up Section
-                    col_su1, col_su2 = st.columns([1.15, 1])
-                    with col_su1:
-                        st.markdown("<p style='text-align: right; color: #64748b; font-size: 14px; margin: 0; padding-top: 4px;'>Don't have an account?</p>", unsafe_allow_html=True)
-                    with col_su2:
+                    # "Don't have an account? Sign Up" — centered, one line
+                    col_su_l, col_su_mid, col_su_r = st.columns([1, 2, 1])
+                    with col_su_mid:
+                        st.markdown(
+                            "<p style='text-align:center; color:#64748b; font-size:13.5px; "
+                            "margin:0 0 4px 0;'>Don't have an account?</p>",
+                            unsafe_allow_html=True
+                        )
                         if st.button("Sign Up", key="btn_signup_link"):
                             st.session_state.auth_mode = "signup"
                             st.rerun()
 
-            # -------------------------------------------------------------
+            # =============================================================
             # 2. SIGN UP INTERFACE
-            # -------------------------------------------------------------
+            # =============================================================
             elif st.session_state.auth_mode == "signup":
-                # Top Section
-                st.markdown("""
-                <div style="text-align: center; margin-bottom: 22px;">
-                    <div style="display: inline-flex; width: 54px; height: 54px; background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); border-radius: 14px; align-items: center; justify-content: center; box-shadow: 0 6px 14px rgba(37, 99, 235, 0.28); margin-bottom: 12px;">
-                        <span style="font-size: 26px;">🎯</span>
-                    </div>
-                    <h1 style="font-size: 24px; font-weight: 700; color: #E53935; margin: 0 0 2px 0; letter-spacing: -0.4px;">AI Interviewer</h1>
-                    <p style="font-size: 13px; font-weight: 600; color: #E53935; margin: 0 0 16px 0; letter-spacing: 0.6px; text-transform: uppercase;">Skill Assessment Platform</p>
-                    <div style="height: 1px; background: #e2e8f0; margin: 0 auto 16px auto; width: 85%;"></div>
-                    <h2 style="font-size: 20px; font-weight: 700; color: #1e293b; margin: 0 0 6px 0;">Create an Account</h2>
-                    <p style="font-size: 14px; color: #64748b; margin: 0 0 4px 0;">Sign up to begin your virtual AI interview assessment.</p>
-                </div>
-                """, unsafe_allow_html=True)
+                # Reuse the shared card header helper
+                _render_card_header("Create your account to get started")
 
-                su_full_name = st.text_input("Full Name *", placeholder="Enter your full name", key="su_fullname")
-                su_email = st.text_input("Email Address *", placeholder="Enter your email address", key="su_email")
-                su_username = st.text_input("Username *", placeholder="Choose a username", key="su_username")
-                
+                su_full_name = st.text_input("Full Name", placeholder="Enter your full name", key="su_fullname")
+                su_email = st.text_input("Email Address", placeholder="you@example.com", key="su_email")
+                su_username = st.text_input("Username", placeholder="Choose a username", key="su_username")
+
+                # Password fields with lag-free "Show password" using st.empty() placeholders
+                su_pwd_slot = st.empty()
+                su_confirm_slot = st.empty()
                 show_su_pwd = st.checkbox("Show password", key="chk_show_su_pwd")
-                su_password = st.text_input(
-                    "Password *",
+
+                su_password = su_pwd_slot.text_input(
+                    "Password",
                     type="text" if show_su_pwd else "password",
-                    placeholder="Enter password (min. 6 characters)",
+                    placeholder="Password (min. 6 characters)",
                     key="su_pwd"
                 )
-                su_confirm_password = st.text_input(
-                    "Confirm Password *",
+                su_confirm_password = su_confirm_slot.text_input(
+                    "Confirm Password",
                     type="text" if show_su_pwd else "password",
-                    placeholder="Confirm password",
+                    placeholder="Confirm your password",
                     key="su_confirm_pwd"
                 )
 
+                st.markdown("<div style='height:8px;'></div>", unsafe_allow_html=True)
                 if st.button("Sign Up", type="primary", use_container_width=True, key="btn_execute_signup"):
                     clean_su_name = su_full_name.strip()
                     clean_su_email = su_email.strip()
@@ -811,11 +868,18 @@ if not st.session_state.user:
                             else:
                                 st.error(reg_msg)
 
-                st.markdown("<div style='height: 18px;'></div>", unsafe_allow_html=True)
-                col_r_login1, col_r_login2 = st.columns([1.15, 1])
-                with col_r_login1:
-                    st.markdown("<p style='text-align: right; color: #64748b; font-size: 14px; margin: 0; padding-top: 4px;'>Already have an account?</p>", unsafe_allow_html=True)
-                with col_r_login2:
+                # "Already have an account?" — centered below button
+                st.markdown("""
+                <div style="height:1px; background:linear-gradient(90deg,transparent,#1e293b,transparent);
+                            margin:16px 0 12px 0;"></div>
+                """, unsafe_allow_html=True)
+                col_rl_l, col_rl_mid, col_rl_r = st.columns([1, 2, 1])
+                with col_rl_mid:
+                    st.markdown(
+                        "<p style='text-align:center; color:#64748b; font-size:13.5px; margin:0 0 4px 0;'>"
+                        "Already have an account?</p>",
+                        unsafe_allow_html=True
+                    )
                     if st.button("Log In", key="btn_return_login"):
                         st.session_state.auth_mode = "login"
                         st.rerun()
